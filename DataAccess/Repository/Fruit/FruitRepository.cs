@@ -64,9 +64,14 @@ public class FruitRepository : IFruitRepository
     {
         using var _context = _contextFactory.CreateDbContext();
 
-        var existingFruit = await _context.Fruits.FindAsync(id) ?? throw new KeyNotFoundException("Fruit not found");
+        var type = await _context.FruitTypes.FindAsync(fruitDTO.TypeId) ?? throw new KeyNotFoundException("FruitType not found");
 
-        _mapper.Map(fruitDTO, existingFruit);
+        var existingFruit = await _context.Fruits.Include(f => f.Type).FirstOrDefaultAsync(f => f.Id == id) ?? throw new KeyNotFoundException("Fruit not found");
+
+        existingFruit.Name = fruitDTO.Name;
+        existingFruit.Description = fruitDTO.Description;
+        existingFruit.TypeId = fruitDTO.TypeId;
+        existingFruit.Type = type;
 
         await _context.SaveChangesAsync();
 
