@@ -92,6 +92,7 @@ public class FruitTests
         {
             Name = "Updated Cherry",
             Description = "Updated Description",
+            TypeId = savedFruit.Type.Id,
         };
 
         var fruitRepository = new FruitRepository(_mapper, _contextFactory);
